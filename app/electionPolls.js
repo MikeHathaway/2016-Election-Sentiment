@@ -1,6 +1,7 @@
 //this file will contain the functions required to generate the polling data for the 2016 election
 
-//http://www.jeromecukier.net/blog/2012/05/28/manipulating-data-like-a-boss-with-d3/
+// http-server -c-1 .
+
 const likelyVotersData = function(array){
   return array.filter(element =>{
     if(element.sample_subpopulation === "Likely Voters"){
@@ -21,28 +22,26 @@ const huffPollsterData = d3.tsv("./data/electionData2016.csv", function(data) {
   console.log(data);
 
   const chart = c3.generate({
-      data: {
+    bindto: '#chart',
+    data: {
           url: '/data/2016ElectionData.csv',
           x: 'end_date',
-          y: 'Trump',
           type: 'line'
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+
       }
+    }
+
+
   });
 
   // console.log(likelyVotersData(data))
   // likelyVotersData(data)
 
 });
-
-// http://stackoverflow.com/questions/29405489/c3-js-scatterplot-example-and-tsv-file
-var chart = c3.generate({
-    data: {
-        url: '/data/2016ElectionData.csv',
-        x: 'end_date',
-        type: 'line'
-    }
-});
-
 
 
 
