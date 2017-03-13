@@ -1,5 +1,11 @@
 ###
+'https://fivethirtyeight.com/features/there-really-was-a-liberal-media-bubble/'
 
+Reframe the project as a look into how accurate NYT reporting actually was ... were they overly ensconced in a bubble, or did they reasonably accurately read the tea leaves?
+
+Icebox idea:
+http://www.cjr.org/analysis/breitbart-media-trump-harvard-study.php
+Add analysis of Breitbart
 
 Todays goal: D3 graph of PredictIT data
 
@@ -9,7 +15,7 @@ http://dyn.realclearpolitics.com/epolls//json/
 https://www.html5rocks.com/en/tutorials/cors/
 
 
-/////// Line Graph PredictIT data stored in Firebase /////////
+/////// Line Graph PredictIT / Huffpollster data stored in Firebase /////////
 
   /////// NYT API to generate articles related to Trump or Clinton /////////
 

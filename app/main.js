@@ -13,7 +13,7 @@ xhr.addEventListener("readystatechange", function () {
   }
 });
 
-xhr.open("GET", "https://api.nytimes.com/svc/search/v2/articlesearch.json");
+xhr.open("GET", "http://galvanize-cors-proxy.herokuapp.com/https://api.nytimes.com/svc/search/v2/articlesearch.json");
 xhr.setRequestHeader("api-key", "bee376d83aef4bdaa4a5591e1bd2be14");
 xhr.setRequestHeader("cache-control", "no-cache");
 xhr.setRequestHeader("postman-token", "1b202d42-cb26-64f1-f274-7b44111f1b50");
