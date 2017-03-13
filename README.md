@@ -8,6 +8,7 @@ http://www.cjr.org/analysis/breitbart-media-trump-harvard-study.php
 Add analysis of Breitbart
 
 Todays goal: D3 graph of PredictIT data
+Tuesday Goal: Creation and graphing of NYT Sentiment data
 
 http://www.realclearpolitics.com/epolls/json/3824_historical.js?1453388629140&callback=return_json
 http://dyn.realclearpolitics.com/epolls//json/
