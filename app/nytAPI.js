@@ -1,3 +1,4 @@
+//More than 20k articles on Trump alone... may need to limit the time span
 
 //IIFE that controls access to NYT articles
   //This is then piped into the Watson API to generate sentiment data
@@ -46,24 +47,28 @@ const nytFunctionality = (function(document){
       console.log(result,url)
       const articles = result.response.docs
       const web_url = "web_url"
-
       const articleURLs = nytFunctionality.genArrayByParam(articles,web_url)
-      const TrumpArticles = nytFunctionality.searchForCandidate(nytFunctionality.arrayOfAbstracts(articles),'Trump')
-      const ClintonArticles = nytFunctionality.searchForCandidate(nytFunctionality.arrayOfAbstracts(articles),'Clinton')
+
+      console.log(articles)
 
       //insert call to watsonAPI here
-      console.log(articles)
-      // textAnalysis.promiseChain(articleURLs[1])
+      const TrumpArticles = nytFunctionality.arrayOfAbstracts(articles)
 
-      // console.log('!', articleURLs)
-      // console.log(nytFunctionality.arrayOfAbstracts(articles))
-      // console.log(TrumpArticles,ClintonArticles)
+      //will call nytFunctionality.storeJSON on this whole function
+      TrumpArticles.map(element => {
+        return textAnalysis.promiseChain(element)
+      })
+
     }).catch(function(err) {
       throw err;
     });
   }
 
+  nytFunctionality.storeJSON = function(data){
+
+  }
+
   return nytFunctionality
 })(document)
 
-nytFunctionality.retreiveArticles('Clinton')
+nytFunctionality.retreiveArticles('Trump')
