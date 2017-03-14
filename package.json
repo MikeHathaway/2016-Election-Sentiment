@@ -1,0 +1,19 @@
+{
+  "name": "election-sentiment",
+  "version": "1.0.0",
+  "description": "'https://fivethirtyeight.com/features/there-really-was-a-liberal-media-bubble/'",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MikeHathaway/2016-Election-Sentiment.git"
+  },
+  "author": "Mike Hathaway",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MikeHathaway/2016-Election-Sentiment/issues"
+  },
+  "homepage": "https://github.com/MikeHathaway/2016-Election-Sentiment#readme"
+}

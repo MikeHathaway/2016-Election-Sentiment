@@ -1,5 +1,12 @@
 //More than 20k articles on Trump alone... may need to limit the time span
 
+  //Current goals: generate and append to persistent JSON,
+    //append the Watson Sentiment Score to each JSON object
+
+//Global analyzed article object
+// const fs = require('fs')
+
+
 //IIFE that controls access to NYT articles
   //This is then piped into the Watson API to generate sentiment data
 const nytFunctionality = (function(document){
@@ -32,40 +39,53 @@ const nytFunctionality = (function(document){
 
   nytFunctionality.retreiveArticles = function(searchString){
     let url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+    let data = {
+      'q': searchString, //['Trump','Clinton'] -- would be cool to generalize to both
+      'begin_date': "20160101",
+      'end_date': "20161108"
+    }
+
     url += '?' + $.param({
       'api-key': "bee376d83aef4bdaa4a5591e1bd2be14",
-    }); //+ '&facet_field=source&facet_filter=true'; //recent addition
-    $.ajax({
-      url: url, //url,
-      method: 'GET',
-      data: {
-        'q': searchString, //['Trump','Clinton'] -- would be cool to generalize to both
-        'begin_date': "20160101",
-        'end_date': "20161108"
-      }
-    }).then(function(result) {
-      console.log(result,url)
-      const articles = result.response.docs
-      const web_url = "web_url"
-      const articleURLs = nytFunctionality.genArrayByParam(articles,web_url)
-
-      console.log(articles)
-
-      //insert call to watsonAPI here
-      const TrumpArticles = nytFunctionality.arrayOfAbstracts(articles)
-
-      //will call nytFunctionality.storeJSON on this whole function
-      TrumpArticles.map(element => {
-        return textAnalysis.promiseChain(element)
-      })
-
-    }).catch(function(err) {
-      throw err;
     });
+
+    return $.get(url, data)
+      .then(function(result) {
+        const articles = result.response.docs
+        // const web_url = "web_url"
+        // const articleURLs = nytFunctionality.genArrayByParam(articles,web_url)
+        // const TrumpArticles = nytFunctionality.arrayOfAbstracts(articles)
+
+        //insert call to watsonAPI here
+        const analyzedArticles = articles.map(article => {
+          return textAnalysis.promiseChain(article.lead_paragraph)
+            .then((res) => {
+              article['sentiment'] = res
+              console.log('*****', article);
+              return article
+            })
+        })
+
+        //Storing data would need to occur within here
+        Promise.all(analyzedArticles)
+          .then(function (result) {
+            console.log(result);
+            nytFunctionality.storeJSON(result)
+          })
+      })
+      .catch(function(err) {
+        throw err;
+      });
   }
 
+  //http://stackoverflow.com/questions/32546100/how-to-write-data-to-a-json-file-using-javascript
+  //need to append each new set of api calls to a global scatterplot json
   nytFunctionality.storeJSON = function(data){
+    // return fs.writeFile('testData.json',JSON.stringify(data))
 
+    // const storedArticleSentiment = []
+    // storedArticleSentiment.push(data)
+    // return localStorage.setItem('myStorage',JSON.stringify(storedArticleSentiment))
   }
 
   return nytFunctionality
