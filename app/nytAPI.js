@@ -60,8 +60,7 @@ const nytFunctionality = (function(document){
         const analyzedArticles = articles.map(article => {
           return textAnalysis.promiseChain(article.lead_paragraph)
             .then((res) => {
-              article['sentiment'] = res
-              console.log('*****', article);
+              article['sentiment'] = res.score
               return article
             })
         })
