@@ -1,29 +1,51 @@
 //More than 20k articles on Trump alone... may need to limit the time span
 
   //Current goals: generate and append to persistent JSON,
-    //append the Watson Sentiment Score to each JSON object
 
-    // Initialize Firebase
 
+// Initialize Firebase
 var config = {
-      apiKey: "AIzaSyB5F9w1---vt7Ry_sXGJsnYHbeCa6NZQHw",
-      authDomain: "election-sentiment.firebaseapp.com",
-      databaseURL: "https://election-sentiment.firebaseio.com",
-      storageBucket: "election-sentiment.appspot.com",
-      messagingSenderId: "560838721290"
-    };
+    apiKey: "AIzaSyB5F9w1---vt7Ry_sXGJsnYHbeCa6NZQHw",
+    authDomain: "election-sentiment.firebaseapp.com",
+    databaseURL: "https://election-sentiment.firebaseio.com",
+    storageBucket: "election-sentiment.appspot.com",
+    messagingSenderId: "560838721290"
+};
     firebase.initializeApp(config);
 
 
+//DB Code to generate persistent JSON structure
 //https://firebase.google.com/docs/database/web/read-and-write
 const database = firebase.database();
+
+
+//firebase.database().ref('articles').set({ 0: temp1 })
+//firebase.database().ref('yo/a').set({ b: 3 })
+
+
+
+//this function will be called within the promise.all resolution
+  //This is currently broken because I need to figure out how to initalize the data structure
+// function writeSentimentData(articleID,leadParagraph,candidate,sentiment,url){
+//   const articleData = {
+//     articleID: articleID,
+//     leadParagraph: leadParagraph,
+//     candidate: candidate,
+//     sentiment: sentiment,
+//     url: url
+//   }
 //
-// function writeToJSON(){
+//   const newArticleKey = database.ref().child('articles').push()//.key
+//   const updates = {}
 //
+//   updates['articles/'] = articleData
+//
+//   return database.ref().update(updates)
 // }
 
-
-
+function writeSentimentData(data){
+  return database.ref('articles').update(data)
+}
 
 
 
@@ -89,7 +111,11 @@ const nytFunctionality = (function(document){
         Promise.all(analyzedArticles)
           .then(function (result) {
             console.log(result);
-            return nytFunctionality.storeJSON(result)
+
+            return writeSentimentData(result)
+
+            // return writeSentimentData(result['_id'],result.lead_paragraph,'Trump',result.sentiment,result['web_url'])
+            // return nytFunctionality.storeJSON(result)
           })
       })
       .catch(function(err) {

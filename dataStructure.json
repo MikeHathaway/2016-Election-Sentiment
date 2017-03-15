@@ -1,0 +1,6 @@
+election-sentiment : {
+  articles: [
+    articleOne,
+    articleTwo,
+  ],
+}
