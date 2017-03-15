@@ -2,6 +2,9 @@
 
   //Current goals: generate and append to persistent JSON,
 
+  //need to append a property that allows for seeing if the article is primarily about Trump, or Clinton,
+    // or allow user to specify whether they want to see articles primarily about Trump, or primarily about Clinton, or all articles
+
 
 // Initialize Firebase
 var config = {
@@ -17,12 +20,10 @@ var config = {
 //DB Code to generate persistent JSON structure
 //https://firebase.google.com/docs/database/web/read-and-write
 const database = firebase.database();
-
+let page = 0
 
 //firebase.database().ref('articles').set({ 0: temp1 })
 //firebase.database().ref('yo/a').set({ b: 3 })
-
-
 
 //this function will be called within the promise.all resolution
   //This is currently broken because I need to figure out how to initalize the data structure
@@ -42,11 +43,6 @@ const database = firebase.database();
 //
 //   return database.ref().update(updates)
 // }
-
-function writeSentimentData(data){
-  return database.ref('articles').update(data)
-}
-
 
 
 //IIFE that controls access to NYT articles
@@ -79,12 +75,27 @@ const nytFunctionality = (function(document){
 
 //'http://api.nytimes.com/svc/search/v2/articlesearch.json?query=Trump&facets=publication_year&api-key=bee376d83aef4bdaa4a5591e1bd2be14'
 
+//Currently stuck on returning the first page of the set of nyt articles that fit the parameter, need to iterate over the whole set
+  //page will be a IIFE level counter of the page that matches the query... this can then be updated each on each pass throught the dataset
+
+//http://brooksandrew.github.io/simpleblog/articles/new-york-times-api-to-mongodb/
+  function switchArticlePage(){
+    console.log(page)
+    return page++
+  }
+
+  function writeSentimentData(data){
+    // return database.ref('articles').update(data)
+    return database.ref('articles').push(data)
+  }
+
   nytFunctionality.retreiveArticles = function(searchString){
     let url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
     let data = {
       'q': searchString, //['Trump','Clinton'] -- would be cool to generalize to both
-      'begin_date': "20160101",
-      'end_date': "20161108"
+      'begin_date': "20160610",
+      'end_date': "20161108",
+      'page': page
     }
 
     url += '?' + $.param({
@@ -94,9 +105,6 @@ const nytFunctionality = (function(document){
     return $.get(url, data)
       .then(function(result) {
         const articles = result.response.docs
-        // const web_url = "web_url"
-        // const articleURLs = nytFunctionality.genArrayByParam(articles,web_url)
-        // const TrumpArticles = nytFunctionality.arrayOfAbstracts(articles)
 
         //insert call to watsonAPI here
         const analyzedArticles = articles.map(article => {
@@ -111,11 +119,10 @@ const nytFunctionality = (function(document){
         Promise.all(analyzedArticles)
           .then(function (result) {
             console.log(result);
+            switchArticlePage()
 
             return writeSentimentData(result)
-
             // return writeSentimentData(result['_id'],result.lead_paragraph,'Trump',result.sentiment,result['web_url'])
-            // return nytFunctionality.storeJSON(result)
           })
       })
       .catch(function(err) {
@@ -123,17 +130,14 @@ const nytFunctionality = (function(document){
       });
   }
 
-  //http://stackoverflow.com/questions/32546100/how-to-write-data-to-a-json-file-using-javascript
-  //need to append each new set of api calls to a global scatterplot json
-  nytFunctionality.storeJSON = function(data){
-    // return fs.writeFile('testData.json',JSON.stringify(data))
-
-    // const storedArticleSentiment = []
-    // storedArticleSentiment.push(data)
-    // return localStorage.setItem('myStorage',JSON.stringify(storedArticleSentiment))
-  }
-
   return nytFunctionality
 })(document)
 
-nytFunctionality.retreiveArticles('Trump')
+
+function makeAPICalls(){
+  const timer = window.setInterval(function () {return nytFunctionality.retreiveArticles('Clinton')}, 2000)
+  window.setTimeout(function(){return window.clearInterval(timer)},30000)
+}
+makeAPICalls()
+
+// window.setInterval(function () {return nytFunctionality.retreiveArticles('Trump')}, 1000)
