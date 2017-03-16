@@ -36,18 +36,12 @@ function arrayFlattener(data){
   },[])
 }
 
-
-// function sortByDate(date){
-//   return array.reduce((acc,curr) =>{
-//     if(curr.tweetDay == date){
-//       acc[curr.tweetDay] += value
-//       return acc
-//     }
-//   },[])
-// }
-//
-// sortByDate() * 4
-
+function convertDatesToStrings(dataArray){
+  dataArray.forEach(article =>{
+    article['pub_date'] = new Date(article['pub_date'].split("T")[0])
+  })
+  return dataArray
+}
 
 //function will call the retreiveData searchTerm based upon input field values
   //used order to attempt to minimize computational cost of data generation
@@ -56,20 +50,46 @@ function arrayFlattener(data){
 
   //need to properly specify parameters
   //http://drarmstr.github.io/c3/examples/doc/scatterplot_example.html
+
+  //need to convert from string to float
 const scatterplotData = d3.json('./data/allData.json', function(data){
   // console.log(arrayFlattener(filterUniqueSentimentalArticles(data)))
-  const wrangledData = arrayFlattener(filterUniqueSentimentalArticles(data))
+  // const wrangledData = arrayFlattener(filterUniqueSentimentalArticles(data))
+  const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
   console.log(wrangledData)
+
+  // const scatterplot = c3.generate({
+  //   bindto: '#temp-chart',
+  //   data: {
+  //     json: wrangledData,
+  //     keys: {
+  //       y: 'sentiment',
+  //       value: ['sentiment'],       //['sentiment'],
+  //       x: 'pub_date',
+  //     },
+  //     type: 'scatter',
+  //     },
+  // });
 
   const scatterplot = c3.generate({
     bindto: '#temp-chart',
     data: {
       json: wrangledData,
       keys: {
-        y: 'sentiment',
-        value: ['sentiment'],//['sentiment'],
+        // y: 'sentiment',
+        // value: ['sentiment'],
         x: 'pub_date',
-        value: ['pub_date']
+        value: ['sentiment']
+        // value: ['pub_date']
+
+               //['sentiment'],
+        // x: 'pub_date',
+        // value:
+        // {
+        //   value: ['pub_date'],
+        // },
+        // x: 'pub_date',
+        // value: ['pub_date']
       },
       type: 'scatter',
       },
