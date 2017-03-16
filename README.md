@@ -8,7 +8,7 @@ Hillary won a majority of pledged delegates on June 7th. Trump was declared the 
 
 I will therefore start data collection on June 10th, the Friday of that week. June 13th, the next Monday, was the date of the Pulse Night Club shooting.
 
-
+Input form that lets people enter the value which is filtered for sentiment
 
 
 

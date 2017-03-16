@@ -22,28 +22,6 @@ var config = {
 const database = firebase.database();
 let page = 0
 
-//firebase.database().ref('articles').set({ 0: temp1 })
-//firebase.database().ref('yo/a').set({ b: 3 })
-
-//this function will be called within the promise.all resolution
-  //This is currently broken because I need to figure out how to initalize the data structure
-// function writeSentimentData(articleID,leadParagraph,candidate,sentiment,url){
-//   const articleData = {
-//     articleID: articleID,
-//     leadParagraph: leadParagraph,
-//     candidate: candidate,
-//     sentiment: sentiment,
-//     url: url
-//   }
-//
-//   const newArticleKey = database.ref().child('articles').push()//.key
-//   const updates = {}
-//
-//   updates['articles/'] = articleData
-//
-//   return database.ref().update(updates)
-// }
-
 
 //IIFE that controls access to NYT articles
   //This is then piped into the Watson API to generate sentiment data
@@ -138,6 +116,4 @@ function makeAPICalls(){
   const timer = window.setInterval(function () {return nytFunctionality.retreiveArticles('Clinton')}, 2000)
   window.setTimeout(function(){return window.clearInterval(timer)},30000)
 }
-makeAPICalls()
-
-// window.setInterval(function () {return nytFunctionality.retreiveArticles('Trump')}, 1000)
+// makeAPICalls()
