@@ -119,4 +119,4 @@ function makeAPICalls(searchTerm,n){
   }
 }
 
-makeAPICalls('Russia',2)
+// makeAPICalls('Russia',2)
