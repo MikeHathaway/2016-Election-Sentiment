@@ -56,7 +56,7 @@ const nytFunctionality = (function(document){
   // }
 
 
-  nytFunctionality.retreiveArticles = function(searchString){
+  nytFunctionality.retreiveArticles = function(searchString,page){
     let url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
     let data = {
       'q': searchString, //['Trump','Clinton'] -- would be cool to generalize to both
@@ -87,7 +87,7 @@ const nytFunctionality = (function(document){
         Promise.all(analyzedArticles)
           .then(function (result) {
             console.log(result);
-            switchArticlePage()
+            // switchArticlePage()
 
             // return writeSentimentData(result)
             return writeSentimentData(result,searchString)
@@ -106,17 +106,17 @@ const nytFunctionality = (function(document){
 //   const timer = window.setInterval(function () {return nytFunctionality.retreiveArticles('Clinton')}, 2000)
 //   window.setTimeout(function(){return window.clearInterval(timer)},30000)
 // }
+// makeAPICalls()
 
 //need to determine the number of articles that match the total page count
 
 function makeAPICalls(searchTerm,n){
   let page = -1;
-  console.log(page)
 
   while(++page < n){
     console.log(page)
-    nytFunctionality.retreiveArticles(searchTerm)
+    nytFunctionality.retreiveArticles(searchTerm,page)
   }
 }
 
-makeAPICalls('Russia',5)
+makeAPICalls('Russia',2)
