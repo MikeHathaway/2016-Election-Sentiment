@@ -1,0 +1,15 @@
+///// This approach is depracated /////
+nytFunctionality.arrayOfAbstracts = function(data){
+  return data.reduce((acc,curr) => {
+    acc.push(curr.lead_paragraph)
+    return acc;
+  },[])
+}
+
+nytFunctionality.searchForCandidate = function(articles,candidate){
+  return articles.filter(article => {
+    if(article.includes(candidate)){
+      return article
+    }
+  })
+}

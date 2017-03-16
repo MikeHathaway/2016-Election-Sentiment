@@ -1,7 +1,14 @@
 //As an alternative to locally stored scatter plot data (which could be the default setting), could provide a form in which the user can enter a term with which to search the NYT article abstracts.
 
-// use c3 to generate scatterplot graphics
 
+
+function retreiveData(){
+
+  return
+}
+
+
+// use c3 to generate scatterplot graphic
 const scatterplotData = d3.tsv("./data/electionData2016.csv", function(data) {
   console.log(data);
 

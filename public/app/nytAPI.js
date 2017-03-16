@@ -20,7 +20,7 @@ var config = {
 //DB Code to generate persistent JSON structure
 //https://firebase.google.com/docs/database/web/read-and-write
 const database = firebase.database();
-let page = 0
+// let page = 0
 
 
 //IIFE that controls access to NYT articles
@@ -28,30 +28,12 @@ let page = 0
 const nytFunctionality = (function(document){
   const nytFunctionality = {}
 
-  ///// This approach is depracated /////
-  nytFunctionality.arrayOfAbstracts = function(data){
-    return data.reduce((acc,curr) => {
-      acc.push(curr.lead_paragraph)
-      return acc;
-    },[])
-  }
-
-  nytFunctionality.searchForCandidate = function(articles,candidate){
-    return articles.filter(article => {
-      if(article.includes(candidate)){
-        return article
-      }
-    })
-  }
-
   nytFunctionality.genArrayByParam = function(data,parameter){
     return data.reduce((acc,curr) => {
       acc.push(curr[`${parameter}`])
       return acc
     },[])
   }
-
-//'http://api.nytimes.com/svc/search/v2/articlesearch.json?query=Trump&facets=publication_year&api-key=bee376d83aef4bdaa4a5591e1bd2be14'
 
 //Currently stuck on returning the first page of the set of nyt articles that fit the parameter, need to iterate over the whole set
   //page will be a IIFE level counter of the page that matches the query... this can then be updated each on each pass throught the dataset
@@ -62,10 +44,17 @@ const nytFunctionality = (function(document){
     return page++
   }
 
-  function writeSentimentData(data){
+  function writeSentimentData(data,searchTerm){
     // return database.ref('articles').update(data)
-    return database.ref('articles').push(data)
+    return database.ref(`${searchTerm}-articles`).push(data)
   }
+
+
+  // function writeSentimentData(data){
+  //   // return database.ref('articles').update(data)
+  //   return database.ref('articles').push(data)
+  // }
+
 
   nytFunctionality.retreiveArticles = function(searchString){
     let url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
@@ -94,13 +83,14 @@ const nytFunctionality = (function(document){
         })
 
         //Storing data would need to occur within here
+          //will need to remove switchArticlePage here when generalization is complete
         Promise.all(analyzedArticles)
           .then(function (result) {
             console.log(result);
             switchArticlePage()
 
-            return writeSentimentData(result)
-            // return writeSentimentData(result['_id'],result.lead_paragraph,'Trump',result.sentiment,result['web_url'])
+            // return writeSentimentData(result)
+            return writeSentimentData(result,searchString)
           })
       })
       .catch(function(err) {
@@ -112,8 +102,21 @@ const nytFunctionality = (function(document){
 })(document)
 
 
-function makeAPICalls(){
-  const timer = window.setInterval(function () {return nytFunctionality.retreiveArticles('Clinton')}, 2000)
-  window.setTimeout(function(){return window.clearInterval(timer)},30000)
+// function makeAPICalls(){
+//   const timer = window.setInterval(function () {return nytFunctionality.retreiveArticles('Clinton')}, 2000)
+//   window.setTimeout(function(){return window.clearInterval(timer)},30000)
+// }
+
+//need to determine the number of articles that match the total page count
+
+function makeAPICalls(searchTerm,n){
+  let page = -1;
+  console.log(page)
+
+  while(++page < n){
+    console.log(page)
+    nytFunctionality.retreiveArticles(searchTerm)
+  }
 }
-// makeAPICalls()
+
+makeAPICalls('Russia',5)
