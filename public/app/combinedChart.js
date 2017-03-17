@@ -1,4 +1,25 @@
 
+
+d3.tsv('./data/GenElPolls.csv',function(error,pollData){
+  
+
+  // const pollingData = pollData.map(poll => {
+  //   return Object.keys(poll).filter(prop =>{
+  //     if(prop !== ""){
+  //       return poll[prop]
+  //     }
+  //   })
+  // })
+  // console.log(pollingData)
+
+  // pollData.forEach(obj =>{
+  //   console.log(obj)
+  //   // filteredData.push({obj['Clinton'],obj['Clinton'],obj['end_date']})
+  // })
+  // console.log(filteredData)
+})
+
+
 d3.json('./data/allData.json', function(error, data) {
   const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
   const sentimentData = []
@@ -18,6 +39,7 @@ d3.json('./data/allData.json', function(error, data) {
     x: electionDates,
     y: finalTrumpNums,
     mode: 'lines',
+    yaxis: 'y',
     type: 'scatter',
     name: 'Trump'
   };
@@ -34,8 +56,8 @@ d3.json('./data/allData.json', function(error, data) {
   var ArticleSentiment = {
     x: sentimentDates,
     y: sentimentData,
-    yaxis: 'y2',
     mode: 'markers',
+    yaxis: 'y2',
     type: 'scatter'
   };
 
@@ -47,6 +69,7 @@ d3.json('./data/allData.json', function(error, data) {
     },
     yaxis2: {
       title: 'Sentiment Scores',
+      overlaying: 'y',
       side: 'right'
     },
     xaxis: {
@@ -54,8 +77,8 @@ d3.json('./data/allData.json', function(error, data) {
       title: 'Dates'
     },
     title:'Sentiment and Polls in 2016',
-    height: 800,
-    width: 800
+    height: 1500,
+    width: 1500
   };
 
   Plotly.newPlot('combined-chart', data, layout);
