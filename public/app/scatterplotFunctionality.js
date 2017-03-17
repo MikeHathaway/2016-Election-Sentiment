@@ -2,6 +2,9 @@
 
 
 //this function will return specified json data from firebase
+
+//function will call the retreiveData searchTerm based upon input field values
+  //used order to attempt to minimize computational cost of data generation
 function retreiveData(custom,searchTerm){
   if(custom){
     return database.ref(`${searchTerm}-articles`).once('value', function(data){
@@ -38,150 +41,88 @@ function arrayFlattener(data){
 
 function convertDatesToStrings(dataArray){
   dataArray.forEach(article =>{
-    article['pub_date'] = new Date(article['pub_date'].split("T")[0])
+    article['pub_date'] = article['pub_date'].split("T")[0] //new Date
   })
   return dataArray
 }
 
-//function will call the retreiveData searchTerm based upon input field values
-  //used order to attempt to minimize computational cost of data generation
 
   //http://c3js.org/samples/chart_scatter.html
 
   //need to properly specify parameters
   //http://drarmstr.github.io/c3/examples/doc/scatterplot_example.html
 
-  //need to convert from string to float
 const scatterplotData = d3.json('./data/allData.json', function(data){
   // console.log(arrayFlattener(filterUniqueSentimentalArticles(data)))
   // const wrangledData = arrayFlattener(filterUniqueSentimentalArticles(data))
   const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
-  console.log(wrangledData)
-
-  // const scatterplot = c3.generate({
-  //   bindto: '#temp-chart',
-  //   data: {
-  //     json: wrangledData,
-  //     keys: {
-  //       y: 'sentiment',
-  //       value: ['sentiment'],       //['sentiment'],
-  //       x: 'pub_date',
-  //     },
-  //     type: 'scatter',
-  //     },
-  // });
+  // console.log(wrangledData)
 
   const scatterplot = c3.generate({
     bindto: '#temp-chart',
     data: {
       json: wrangledData,
       keys: {
-        // y: 'sentiment',
-        // value: ['sentiment'],
         x: 'pub_date',
         value: ['sentiment']
-        // value: ['pub_date']
-
-               //['sentiment'],
-        // x: 'pub_date',
-        // value:
-        // {
-        //   value: ['pub_date'],
-        // },
-        // x: 'pub_date',
-        // value: ['pub_date']
       },
       type: 'scatter',
       },
+    axis: {
+      x: {
+        type: 'timeseries',
+      }
+      // type: 'timeseries'
+    }
   });
 
 });
 
 
-  // const chart = c3.generate({
-  //   bindto: '#temp-chart',
-  //   data: {
-  //     url: './data/allData.json',
-  //     x: 'pub_date', //nyt key
-  //     y: 'sentiment',
-  //     type: 'scatter', //need to identify how to use scatterplot
-  //   },
-  //   axis: {
-  //     x: {
-  //       label: 'Date',
-  //       type: 'timeseries',
-  //     },
-  //     y: {
-  //       label: 'Sentiment',
-  //     }
-  //   },
-  //
-  // });
+//http://stackoverflow.com/questions/27100225/not-able-to-create-scatter-and-line-chart-together-in-c3-js
+//http://jocellyn.cz/2014/07/25/simple-charts-with-c3.html
+//documentation: http://c3js.org/reference.html#data-url
 
-// });
-
-// const scatterplot = c3.generate({
-//   bindto: '#temp-chart',
-//   data: {
-//     json: jsonfile,
-//     keys: {
-//       x: 'xvariable',
-//       value: ['valuevariable'],
-//     },
-//     type: 'scatter',
-//     },
-// });
-
-
-
-
-
-// use c3 to generate scatterplot graphic
-// const scatterplotData = d3.tsv("./data/electionData2016.csv", function(data) {
-//   console.log(data);
+  //GenElPolls.csv is the new filtered version of the dataset
+// const combinedChartData = d3.json('./data/allData.json', function(data){
+//   // console.log(arrayFlattener(filterUniqueSentimentalArticles(data)))
+//   // const wrangledData = arrayFlattener(filterUniqueSentimentalArticles(data))
+//   const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
+//   const pollData = './data/pollingData.json'
 //
-//   const chart = c3.generate({
-//     bindto: '#chart',
+//   const scatterplot = c3.generate({
+//     bindto: '#combined-chart',
 //     data: {
-//           url: '/data/2016ElectionData.csv',
-//           x: 'end_date',
-//           type: 'line'
+//       rows: pollData,
+//       json: wrangledData,
+//       // json: {
+//       //   url: pollData,
+//       //   minmType: 'JSON'
+//       // },
+//       keys: {
+//         x: 'pub_date',
+//         value: ['sentiment','Trump','Clinton'],
+//       },
+//       // xs: {
+//       //   sentiment: ['sentiment'],
+//       //   trumpPoll: ['Trump'],
+//       // },
+//       // keys: {
+//       //   x: 'pub_date',
+//       //   value: ['sentiment']
+//       // },
+//       type: 'line',
+//       types: {
+//         wrangledData: 'scatter',
+//         electionData: 'line',
+//       },
 //     },
 //     axis: {
 //       x: {
-//         type: 'timeseries',
-//
+//           type: 'timeseries',
+//         },
 //       }
-//     }
+//   })
 //
 //
-//   });
-//
-// });
-//
-//
-//
-// // const scatterplotData = d3.json("../data/allData.json", function(data){
-// //   const chart = c3.generate
-// //
-// // })
-//
-//
-//
-// d3.json("sample.json", function(data) {
-//   var modData = [];
-//   data.results.forEach(function(d, i) {
-//     var item = ["param-" + d.param];
-//     d.val.forEach(function(j) {
-//       item.push(j);
-//     });
-//     modData.push(item);
-//   });
-//
-//   const chart = c3.generate({
-//     data: {
-//       columns: modData
-//
-//     }
-//   });
 // });

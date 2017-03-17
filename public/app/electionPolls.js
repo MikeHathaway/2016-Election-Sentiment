@@ -19,27 +19,56 @@ const sortByDate = function(array){
 
 //sample_subpopulation --1905
   //it is already prefiltered for likely voters, need to change in the csv file
-const huffPollsterData = d3.tsv("./data/electionData2016.csv", function(data) {
-  console.log(data);
-
-  const chart = c3.generate({
-    bindto: '#chart',
-    data: {
-          url: '/data/2016ElectionData.csv',
-          x: 'end_date',
-          type: 'line'
-    },
-    axis: {
-      x: {
-        type: 'timeseries',
-
-      }
-    }
-
-
-  });
-
-  // console.log(likelyVotersData(data))
-  // likelyVotersData(data)
-
-});
+  // "./data/electionData2016.csv"
+//
+// const huffPollsterData = d3.tsv("./data/electionData2016.csv", function(data) {
+//   console.log(data);
+//
+//   const chart = c3.generate({
+//     bindto: '#chart',
+//     data: {
+//           url: '/data/2016ElectionData.csv',
+//           x: 'end_date',
+//           type: 'line'
+//     },
+//     axis: {
+//       x: {
+//         type: 'timeseries',
+// 
+//       }
+//     }
+//
+//
+//   });
+//
+//   // console.log(likelyVotersData(data))
+//   // likelyVotersData(data)
+//
+// });
+//
+// //
+// const filteredElectionData = d3.json("./data/pollingData.json", function(data) {
+//   // console.log(data);
+//
+//   const chart = c3.generate({
+//     bindto: '#combined-chart',
+//     data: {
+//           json: './data/pollingData.json',
+//           x: 'end_date',
+//           value: ['Trump','Clinton'],
+//           type: 'line'
+//     },
+//     axis: {
+//       x: {
+//         type: 'timeseries',
+//
+//       }
+//     }
+//
+//
+//   });
+//
+//   // console.log(likelyVotersData(data))
+//   // likelyVotersData(data)
+//
+// });
