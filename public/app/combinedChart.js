@@ -1,24 +1,74 @@
 
+function retreiveData(custom,searchTerm){
+  if(custom){
+    return database.ref(`${searchTerm}-articles`).once('value', function(data){
+      return JSON.stringify(data.val())
+    })
+  }
+  return database.ref(`articles`).once('value', function(data){
+    return JSON.stringify(data.val())
+  })
+}
+
+
+//this function checks to see that an article is unique
+  //it stil needs to be gernalized to multiple article types
+function filterUniqueSentimentalArticles(data){
+  const uniqueArticles = []
+  const articlesOfInterest = data.articles
+
+  return Object.keys(articlesOfInterest).map(page =>{
+    return articlesOfInterest[page].filter(article => {
+      if(uniqueArticles.indexOf(article['_id']) === -1 && article.sentiment !== 0){
+        uniqueArticles.push(article['_id'])
+        return article
+      }
+    })
+  })
+}
+
+function arrayFlattener(data){
+  return data.reduce((acc,curr) =>{
+    return acc.concat(curr)
+  },[])
+}
+
+function convertDatesToStrings(dataArray){
+  dataArray.forEach(article =>{
+    article['pub_date'] = article['pub_date'].split("T")[0] //new Date
+  })
+  return dataArray
+}
+
+
 
 d3.tsv('./data/GenElPolls.csv',function(error,pollData){
-  
+  const TrumpMVPolls = []
+  const ClintonMVPolls = []
 
-  // const pollingData = pollData.map(poll => {
-  //   return Object.keys(poll).filter(prop =>{
-  //     if(prop !== ""){
-  //       return poll[prop]
-  //     }
-  //   })
-  // })
-  // console.log(pollingData)
+  console.log(pollData)
 
-  // pollData.forEach(obj =>{
-  //   console.log(obj)
-  //   // filteredData.push({obj['Clinton'],obj['Clinton'],obj['end_date']})
-  // })
-  // console.log(filteredData)
+//neede to generate a new object to be pusehd to the accumulator
+  //this function is incrdibly screwed up
+  function genMovingAverage(inpArray,candidate1,candidate2){
+    return inpArray.reduce((acc,curr,index,polls) =>{
+      // if(index !== inpArray.length - 1){
+        if(curr['end_date'] === polls[index + 1]['end_date']){
+          curr[candidate1] = (parseInt(curr[candidate1]) + parseInt(polls[index + 1][candidate1])) / 2
+          curr[candidate2] = (parseInt(curr[candidate2]) + parseInt(polls[index + 1][candidate2])) / 2
+          acc.push(curr)
+        }
+      // }
+      return acc
+    },[])
+  }
+
+  //sooooo janky
+  console.log(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(pollData,'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'))
+  // console.log(genMovingAverage('Clinton'))
+
 })
-
+//
 
 d3.json('./data/allData.json', function(error, data) {
   const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
@@ -57,6 +107,7 @@ d3.json('./data/allData.json', function(error, data) {
     x: sentimentDates,
     y: sentimentData,
     mode: 'markers',
+    name: 'sentiment',
     yaxis: 'y2',
     type: 'scatter'
   };
@@ -78,49 +129,9 @@ d3.json('./data/allData.json', function(error, data) {
     },
     title:'Sentiment and Polls in 2016',
     height: 1500,
-    width: 1500
+    width: 8000
   };
 
   Plotly.newPlot('combined-chart', data, layout);
 
 });
-
-
-//this will be a passed in JSON
-// var trace1 = {
-//   x: [1, 2, 3, 4],
-//   y: [10, 15, 13, 17],
-//   mode: 'markers',
-//   type: 'scatter'
-// };
-//
-//x is Clinton, Y is Trump
-// var TrumpPolls = {
-//   x: electionDates,
-//   y: finalTrumpNums,
-//   mode: 'lines',
-//   type: 'scatter'
-// };
-//
-// var ClintonPolls = {
-//   x: electionDates,
-//   y: finalClintonNums,
-//   mode: 'lines',
-//   type: 'scatter'
-// };
-//
-// var data = [ TrumpPolls, ClintonPolls];
-//
-// var layout = {
-//   xaxis: {
-//     type: 'date'
-//   },
-//   title:'Sentiment and Polls in 2016',
-//   height: 400,
-//   width: 600
-// };
-//
-// Plotly.newPlot('combined-chart', data, layout);
-//
-// console.log('!!!',wrangledData)
-//

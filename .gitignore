@@ -2,3 +2,4 @@ node_modules/
 vendor
 firebase*
 .firebaserc
+public/app/unused
