@@ -8,6 +8,23 @@ a {
   color: rgb(3,155,229);
 }
 
+
+#title-container {
+  display: flex;
+  justify-content: center;
+}
+
+#chart-container {
+  height: 80vh;
+  width: 80vw;
+  overflow: auto;
+}
+
+.container-centerer {
+  display: flex;
+  justify-content: center;
+}
+
 #message {
   max-width: 400px;
   margin: 40px auto;

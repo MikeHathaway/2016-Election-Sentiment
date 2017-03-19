@@ -50,23 +50,23 @@ d3.tsv('./data/GenElPolls.csv',function(error,pollData){
 
 //neede to generate a new object to be pusehd to the accumulator
   //this function is incrdibly screwed up
-  function genMovingAverage(inpArray,candidate1,candidate2){
-    return inpArray.reduce((acc,curr,index,polls) =>{
-      // if(index !== inpArray.length - 1){
-        if(curr['end_date'] === polls[index + 1]['end_date']){
-          curr[candidate1] = (parseInt(curr[candidate1]) + parseInt(polls[index + 1][candidate1])) / 2
-          curr[candidate2] = (parseInt(curr[candidate2]) + parseInt(polls[index + 1][candidate2])) / 2
-          acc.push(curr)
-        }
-      // }
-      return acc
-    },[])
-  }
-
-  //sooooo janky
-  console.log(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(pollData,'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'))
-  // console.log(genMovingAverage('Clinton'))
-
+//   function genMovingAverage(inpArray,candidate1,candidate2){
+//     return inpArray.reduce((acc,curr,index,polls) =>{
+//       // if(index !== inpArray.length - 1){
+//         if(curr['end_date'] === polls[index + 1]['end_date']){
+//           curr[candidate1] = (parseInt(curr[candidate1]) + parseInt(polls[index + 1][candidate1])) / 2
+//           curr[candidate2] = (parseInt(curr[candidate2]) + parseInt(polls[index + 1][candidate2])) / 2
+//           acc.push(curr)
+//         }
+//       // }
+//       return acc
+//     },[])
+//   }
+//
+//   //sooooo janky
+//   console.log(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(genMovingAverage(pollData,'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'),'Trump','Clinton'))
+//   // console.log(genMovingAverage('Clinton'))
+//
 })
 //
 
@@ -74,11 +74,18 @@ d3.json('./data/allData.json', function(error, data) {
   const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
   const sentimentData = []
   const sentimentDates = []
+  const sentimentURL = []
+  const sentimentHeadline = []
+
 
   wrangledData.forEach(article =>{
     sentimentData.push(article.sentiment)
     sentimentDates.push(article['pub_date'])
+    sentimentURL.push(article['web_url'])
+    sentimentHeadline.push(article['headline'].main)
   })
+
+  console.log(wrangledData)
 
   if (error){
     return console.warn(error);
@@ -88,19 +95,25 @@ d3.json('./data/allData.json', function(error, data) {
   var TrumpPolls = {
     x: electionDates,
     y: finalTrumpNums,
-    mode: 'lines',
+    mode: 'markers',
     yaxis: 'y',
     type: 'scatter',
-    name: 'Trump'
+    name: 'Trump',
+    line: {
+      color: 'rgb(206, 10, 10)'
+    }
   };
 
   var ClintonPolls = {
     x: electionDates,
     y: finalClintonNums,
-    mode: 'lines',
+    mode: 'markers', //formerly lines
     yaxis: 'y',
     type: 'scatter',
-    name: 'Clinton'
+    name: 'Clinton',
+    line: {
+      color: 'rgb(20, 16, 237)'
+    }
   };
 
   var ArticleSentiment = {
@@ -109,7 +122,9 @@ d3.json('./data/allData.json', function(error, data) {
     mode: 'markers',
     name: 'sentiment',
     yaxis: 'y2',
-    type: 'scatter'
+    type: 'scatter',
+    text: sentimentHeadline,//[sentimentHeadline,sentimentURL],
+    hoverinfo: 'text',
   };
 
   var data = [TrumpPolls, ClintonPolls, ArticleSentiment];
@@ -127,9 +142,9 @@ d3.json('./data/allData.json', function(error, data) {
       type: 'date',
       title: 'Dates'
     },
-    title:'Sentiment and Polls in 2016',
-    height: 1500,
-    width: 8000
+    // title:'Sentiment and Polls in 2016',
+    height: 755,
+    width: 5000
   };
 
   Plotly.newPlot('combined-chart', data, layout);
