@@ -70,6 +70,7 @@ d3.tsv('./data/GenElPolls.csv',function(error,pollData){
 })
 //
 
+//replace ./data/allData.json with makeAPICalls() output -> keep local
 d3.json('./data/allData.json', function(error, data) {
   const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
   const sentimentData = []

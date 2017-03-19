@@ -2,6 +2,7 @@ console.log('WatsonAPI Loaded')
 
 //https://watson-api-explorer.mybluemix.net/apis/natural-language-understanding-v1#!/Analyze/analyzeGet
 
+// TODO: PROTOTYPE BITCH
 const textAnalysis = (function(){
   const textAnalysis = {}
   const username = "5ce08e86-c1d1-4f72-821b-1bed6bb27ec4"

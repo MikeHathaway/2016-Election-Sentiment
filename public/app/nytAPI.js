@@ -1,11 +1,3 @@
-//More than 20k articles on Trump alone... may need to limit the time span
-
-  //Current goals: generate and append to persistent JSON,
-
-  //need to append a property that allows for seeing if the article is primarily about Trump, or Clinton,
-    // or allow user to specify whether they want to see articles primarily about Trump, or primarily about Clinton, or all articles
-
-
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyB5F9w1---vt7Ry_sXGJsnYHbeCa6NZQHw",
@@ -20,8 +12,6 @@ var config = {
 //DB Code to generate persistent JSON structure
 //https://firebase.google.com/docs/database/web/read-and-write
 const database = firebase.database();
-// let page = 0
-
 
 //IIFE that controls access to NYT articles
   //This is then piped into the Watson API to generate sentiment data
@@ -45,21 +35,15 @@ const nytFunctionality = (function(document){
   }
 
   function writeSentimentData(data,searchTerm){
-    // return database.ref('articles').update(data)
     return database.ref(`${searchTerm}-articles`).push(data)
   }
 
-
-  // function writeSentimentData(data){
-  //   // return database.ref('articles').update(data)
-  //   return database.ref('articles').push(data)
-  // }
-
-
-  nytFunctionality.retreiveArticles = function(searchString,page){
+  //Add flag to check if information should be sent to firebase
+    //local parameter determines whether or not to send information to firebase
+  nytFunctionality.retreiveArticles = function(searchString,page,local = true){
     let url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
     let data = {
-      'q': searchString, //['Trump','Clinton'] -- would be cool to generalize to both
+      'q': searchString,
       'begin_date': "20160610",
       'end_date': "20161108",
       'page': page
@@ -77,8 +61,12 @@ const nytFunctionality = (function(document){
         const analyzedArticles = articles.map(article => {
           return textAnalysis.promiseChain(article.lead_paragraph)
             .then((res) => {
-              article['sentiment'] = res.score
-              return article
+              if(res !== undefined){
+                article['sentiment'] = res.score
+                return article
+              }
+              // article['sentiment'] = res.score
+              // return article
             })
         })
 
@@ -87,10 +75,10 @@ const nytFunctionality = (function(document){
         Promise.all(analyzedArticles)
           .then(function (result) {
             console.log(result);
-            // switchArticlePage()
-
-            // return writeSentimentData(result)
-            return writeSentimentData(result,searchString)
+            if(local === false){
+              return writeSentimentData(result,searchString)
+            }
+            return result
           })
       })
       .catch(function(err) {
@@ -112,11 +100,13 @@ const nytFunctionality = (function(document){
 
 function makeAPICalls(searchTerm,n){
   let page = -1;
+  console.log('call is going through')
 
   while(++page < n){
     console.log(page)
     nytFunctionality.retreiveArticles(searchTerm,page)
   }
 }
+
 
 // makeAPICalls('Russia',2)

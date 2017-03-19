@@ -1445,8 +1445,6 @@ let concatedX = x.reduce((acc, curr) => {
     return acc.concat(curr)
 }, [])
 let finalTrumpNums = concatedX.map(item => parseInt(item))
-console.log(finalTrumpNums)
-
 
 var clinton = [
         [
@@ -2893,7 +2891,6 @@ let newClinton = clinton.reduce((acc, curr) => {
 }, [])
 
 let finalClintonNums = newClinton.map(item => parseInt(item))
-console.log(finalClintonNums)
 
 
 
@@ -4343,5 +4340,3 @@ console.log(finalClintonNums)
   let electionDates = dates.reduce((acc, curr) => {
       return acc.concat(curr)
   }, [])
-
-  console.log(electionDates)

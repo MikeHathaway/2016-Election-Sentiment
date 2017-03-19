@@ -49,13 +49,13 @@
       </section>
 
       <section>
-        <form class="container-centerer">
+        <div class="container-centerer">
           <h3></h3>
           <label for="NYTsearchTermSpecifier"> Select Article Term
           <input id="NYTsearchTermSpecifier" type="text">
-          <input id="formSubmitter" type="submit">
+          <input id="formSubmitter" type="submit" onclick="makeAPICalls(document.getElementById('NYTsearchTermSpecifier').value,1)">
         </label>
-        </form>
+        </div>
       </section>
 
     </main>
