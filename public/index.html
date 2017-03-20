@@ -15,33 +15,25 @@
     <!-- JQUERY UNNECESSARY WITH XHR -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-    <!-- Bootstrap Link -->
-
-    <script defer src="./concater.js"></script>
+    <!-- Application Logic -->
+    <script defer src="./app/firebase.js"></script>
+    <script defer src="./app/concater.js"></script>
     <script defer src="./app/nytAPI.js"></script>
     <script defer src="./app/WatsonAPI.js"></script>
-    <!-- <script defer src="./app/electionPolls.js"></script>
-    <script defer src="./app/scatterplotFunctionality.js"></script> -->
+
+    <!-- Renders Chart -->
     <script defer src="./app/combinedChart.js"></script>
 
   </head>
 
   <body>
     <header>
-      <!-- <h1>NYT Sentiment and the 2016 Election</h1> -->
       <nav id="title-container">
         <h1>NYT Sentiment and the 2016 Election</h1>
       </nav>
     </header>
 
     <main>
-
-      <!-- <section id="chart">
-
-      </section>
-      <section id="temp-chart">
-
-      </section> -->
       <section class="container-centerer">
         <section id="chart-container">
           <div id="combined-chart"></div>

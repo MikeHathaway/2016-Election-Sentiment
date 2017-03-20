@@ -17,7 +17,7 @@ All information will be displayed on these graphs, as demonstrated below.
 
 
 
-
+http://blog.plot.ly/post/117105992082/time-series-graphs-eleven-stunning-ways-you-can
 
 
 

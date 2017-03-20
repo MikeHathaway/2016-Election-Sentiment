@@ -1,20 +1,11 @@
-// Initialize Firebase
-var config = {
-    apiKey: "AIzaSyB5F9w1---vt7Ry_sXGJsnYHbeCa6NZQHw",
-    authDomain: "election-sentiment.firebaseapp.com",
-    databaseURL: "https://election-sentiment.firebaseio.com",
-    storageBucket: "election-sentiment.appspot.com",
-    messagingSenderId: "560838721290"
-};
-    firebase.initializeApp(config);
-
-
-//DB Code to generate persistent JSON structure
-//https://firebase.google.com/docs/database/web/read-and-write
-const database = firebase.database();
-
 //IIFE that controls access to NYT articles
   //This is then piped into the Watson API to generate sentiment data
+
+
+  //Currently stuck on returning the first page of the set of nyt articles that fit the parameter, need to iterate over the whole set
+    //page will be a IIFE level counter of the page that matches the query... this can then be updated each on each pass throught the dataset
+    //http://brooksandrew.github.io/simpleblog/articles/new-york-times-api-to-mongodb/
+
 const nytFunctionality = (function(document){
   const nytFunctionality = {}
 
@@ -23,15 +14,6 @@ const nytFunctionality = (function(document){
       acc.push(curr[`${parameter}`])
       return acc
     },[])
-  }
-
-//Currently stuck on returning the first page of the set of nyt articles that fit the parameter, need to iterate over the whole set
-  //page will be a IIFE level counter of the page that matches the query... this can then be updated each on each pass throught the dataset
-
-//http://brooksandrew.github.io/simpleblog/articles/new-york-times-api-to-mongodb/
-  function switchArticlePage(){
-    console.log(page)
-    return page++
   }
 
   function writeSentimentData(data,searchTerm){
@@ -57,7 +39,7 @@ const nytFunctionality = (function(document){
       .then(function(result) {
         const articles = result.response.docs
 
-        //insert call to watsonAPI here
+        //Calls Watson API and appends score to article object
         const analyzedArticles = articles.map(article => {
           return textAnalysis.promiseChain(article.lead_paragraph)
             .then((res) => {
@@ -65,21 +47,17 @@ const nytFunctionality = (function(document){
                 article['sentiment'] = res.score
                 return article
               }
-              // article['sentiment'] = res.score
-              // return article
+              console.log('sentiment not added')
             })
         })
 
-        //Storing data would need to occur within here
-          //will need to remove switchArticlePage here when generalization is complete
         Promise.all(analyzedArticles)
           .then(function (result) {
-            console.log(result);
             if(local === false){
-              return writeSentimentData(result,searchString)
+              writeSentimentData(result,searchString)
+              return renderChart(result)
             }
             return renderChart(result)
-            // return result
           })
       })
       .catch(function(err) {
@@ -90,15 +68,6 @@ const nytFunctionality = (function(document){
   return nytFunctionality
 })(document)
 
-
-// function makeAPICalls(){
-//   const timer = window.setInterval(function () {return nytFunctionality.retreiveArticles('Clinton')}, 2000)
-//   window.setTimeout(function(){return window.clearInterval(timer)},30000)
-// }
-// makeAPICalls()
-
-//need to determine the number of articles that match the total page count
-
 function makeAPICalls(searchTerm,n){
   let page = -1;
   console.log('call is going through')
@@ -108,8 +77,5 @@ function makeAPICalls(searchTerm,n){
     nytFunctionality.retreiveArticles(searchTerm,page)
   }
 }
-
-console.log(makeAPICalls('Russia',1))
-
 
 // makeAPICalls('Russia',2)
