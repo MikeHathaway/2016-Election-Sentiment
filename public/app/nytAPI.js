@@ -78,7 +78,8 @@ const nytFunctionality = (function(document){
             if(local === false){
               return writeSentimentData(result,searchString)
             }
-            return result
+            return renderChart(result)
+            // return result
           })
       })
       .catch(function(err) {
@@ -107,6 +108,8 @@ function makeAPICalls(searchTerm,n){
     nytFunctionality.retreiveArticles(searchTerm,page)
   }
 }
+
+console.log(makeAPICalls('Russia',1))
 
 
 // makeAPICalls('Russia',2)

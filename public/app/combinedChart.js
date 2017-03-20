@@ -1,3 +1,5 @@
+//should wrap this entire page in an IIFE
+
 
 function retreiveData(custom,searchTerm){
   if(custom){
@@ -13,12 +15,26 @@ function retreiveData(custom,searchTerm){
 
 //this function checks to see that an article is unique
   //it stil needs to be gernalized to multiple article types
+// function filterUniqueSentimentalArticles(data){
+//   const uniqueArticles = []
+//   const articlesOfInterest = data.articles
+//
+//
+//   return Object.keys(articlesOfInterest).map(page =>{
+//     return articlesOfInterest[page].filter(article => {
+//       if(uniqueArticles.indexOf(article['_id']) === -1 && article.sentiment !== 0){
+//         uniqueArticles.push(article['_id'])
+//         return article
+//       }
+//     })
+//   })
+// }
+
 function filterUniqueSentimentalArticles(data){
   const uniqueArticles = []
-  const articlesOfInterest = data.articles
 
-  return Object.keys(articlesOfInterest).map(page =>{
-    return articlesOfInterest[page].filter(article => {
+  return Object.keys(data).map(page =>{
+    return data[page].filter(article => {
       if(uniqueArticles.indexOf(article['_id']) === -1 && article.sentiment !== 0){
         uniqueArticles.push(article['_id'])
         return article
@@ -71,83 +87,178 @@ d3.tsv('./data/GenElPolls.csv',function(error,pollData){
 //
 
 //replace ./data/allData.json with makeAPICalls() output -> keep local
-d3.json('./data/allData.json', function(error, data) {
-  const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
-  const sentimentData = []
-  const sentimentDates = []
-  const sentimentURL = []
-  const sentimentHeadline = []
+//'./data/allData.json'
+//old default url
 
 
-  wrangledData.forEach(article =>{
-    sentimentData.push(article.sentiment)
-    sentimentDates.push(article['pub_date'])
-    sentimentURL.push(article['web_url'])
-    sentimentHeadline.push(article['headline'].main)
-  })
+//json.parse(makeAPICalls)
 
-  console.log(wrangledData)
+function renderChart(dataSet){
+    // const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(dataSet)))
+    const sentimentData = []
+    const sentimentDates = []
+    const sentimentURL = []
+    const sentimentHeadline = []
 
-  if (error){
-    return console.warn(error);
-  }
+    //formerly wrangledData
+    dataSet.forEach(article =>{
+      if(article !== undefined){
+        sentimentData.push(article.sentiment)
+        sentimentDates.push(article['pub_date'])
+        sentimentURL.push(article['web_url'])
+        sentimentHeadline.push(article['headline'].main)
+      }
+    })
 
-  //x is Clinton, Y is Trump
-  var TrumpPolls = {
-    x: electionDates,
-    y: finalTrumpNums,
-    mode: 'markers',
-    yaxis: 'y',
-    type: 'scatter',
-    name: 'Trump',
-    line: {
-      color: 'rgb(206, 10, 10)'
-    }
-  };
+    // console.log(wrangledData)
 
-  var ClintonPolls = {
-    x: electionDates,
-    y: finalClintonNums,
-    mode: 'markers', //formerly lines
-    yaxis: 'y',
-    type: 'scatter',
-    name: 'Clinton',
-    line: {
-      color: 'rgb(20, 16, 237)'
-    }
-  };
+    // if (error){
+    //   return console.warn(error);
+    // }
 
-  var ArticleSentiment = {
-    x: sentimentDates,
-    y: sentimentData,
-    mode: 'markers',
-    name: 'sentiment',
-    yaxis: 'y2',
-    type: 'scatter',
-    text: sentimentHeadline,//[sentimentHeadline,sentimentURL],
-    hoverinfo: 'text',
-  };
+    //x is Clinton, Y is Trump
+    var TrumpPolls = {
+      x: electionDates,
+      y: finalTrumpNums,
+      mode: 'markers',
+      yaxis: 'y',
+      type: 'scatter',
+      name: 'Trump',
+      line: {
+        color: 'rgb(206, 10, 10)'
+      }
+    };
 
-  var data = [TrumpPolls, ClintonPolls, ArticleSentiment];
+    var ClintonPolls = {
+      x: electionDates,
+      y: finalClintonNums,
+      mode: 'markers', //formerly lines
+      yaxis: 'y',
+      type: 'scatter',
+      name: 'Clinton',
+      line: {
+        color: 'rgb(20, 16, 237)'
+      }
+    };
 
-  var layout = {
-    yaxis: {
-      title: 'Support'
-    },
-    yaxis2: {
-      title: 'Sentiment Scores',
-      overlaying: 'y',
-      side: 'right'
-    },
-    xaxis: {
-      type: 'date',
-      title: 'Dates'
-    },
-    // title:'Sentiment and Polls in 2016',
-    height: 755,
-    width: 5000
-  };
+    var ArticleSentiment = {
+      x: sentimentDates,
+      y: sentimentData,
+      mode: 'markers',
+      name: 'sentiment',
+      yaxis: 'y2',
+      type: 'scatter',
+      text: sentimentHeadline,//[sentimentHeadline,sentimentURL],
+      hoverinfo: 'text',
+    };
 
-  Plotly.newPlot('combined-chart', data, layout);
+    var data = [TrumpPolls, ClintonPolls, ArticleSentiment];
 
-});
+    var layout = {
+      yaxis: {
+        title: 'Support'
+      },
+      yaxis2: {
+        title: 'Sentiment Scores',
+        overlaying: 'y',
+        side: 'right'
+      },
+      xaxis: {
+        type: 'date',
+        title: 'Dates'
+      },
+      // title:'Sentiment and Polls in 2016',
+      height: 755,
+      width: 5000
+    };
+
+    Plotly.newPlot('combined-chart', data, layout);
+}
+
+// const dataToRender = JSON.parse('../data/allData.json')
+// renderChart(dataToRender)
+
+//
+// const renderChart = function(url){
+//   d3.json(url, function(error, data) {
+//     const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(data)))
+//     const sentimentData = []
+//     const sentimentDates = []
+//     const sentimentURL = []
+//     const sentimentHeadline = []
+//
+//
+//     wrangledData.forEach(article =>{
+//       sentimentData.push(article.sentiment)
+//       sentimentDates.push(article['pub_date'])
+//       sentimentURL.push(article['web_url'])
+//       sentimentHeadline.push(article['headline'].main)
+//     })
+//
+//     console.log(wrangledData)
+//
+//     if (error){
+//       return console.warn(error);
+//     }
+//
+//     //x is Clinton, Y is Trump
+//     var TrumpPolls = {
+//       x: electionDates,
+//       y: finalTrumpNums,
+//       mode: 'markers',
+//       yaxis: 'y',
+//       type: 'scatter',
+//       name: 'Trump',
+//       line: {
+//         color: 'rgb(206, 10, 10)'
+//       }
+//     };
+//
+//     var ClintonPolls = {
+//       x: electionDates,
+//       y: finalClintonNums,
+//       mode: 'markers', //formerly lines
+//       yaxis: 'y',
+//       type: 'scatter',
+//       name: 'Clinton',
+//       line: {
+//         color: 'rgb(20, 16, 237)'
+//       }
+//     };
+//
+//     var ArticleSentiment = {
+//       x: sentimentDates,
+//       y: sentimentData,
+//       mode: 'markers',
+//       name: 'sentiment',
+//       yaxis: 'y2',
+//       type: 'scatter',
+//       text: sentimentHeadline,//[sentimentHeadline,sentimentURL],
+//       hoverinfo: 'text',
+//     };
+//
+//     var data = [TrumpPolls, ClintonPolls, ArticleSentiment];
+//
+//     var layout = {
+//       yaxis: {
+//         title: 'Support'
+//       },
+//       yaxis2: {
+//         title: 'Sentiment Scores',
+//         overlaying: 'y',
+//         side: 'right'
+//       },
+//       xaxis: {
+//         type: 'date',
+//         title: 'Dates'
+//       },
+//       // title:'Sentiment and Polls in 2016',
+//       height: 755,
+//       width: 5000
+//     };
+//
+//     Plotly.newPlot('combined-chart', data, layout);
+//
+//   });
+//
+// }
