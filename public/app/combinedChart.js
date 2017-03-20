@@ -1,6 +1,7 @@
 //should wrap this entire page in an IIFE
   //need to look into Javascript classes
 
+
 function retreiveData(custom,searchTerm){
   if(custom){
     return database.ref(`${searchTerm}-articles`).once('value', function(data){
@@ -55,14 +56,14 @@ d3.tsv('./data/GenElPolls.csv',function(error,pollData){
   console.log(pollData)
 })
 
-//'./data/allData.json'
-//json.parse(makeAPICalls)
-function renderChart(dataSet){
+function wranglePollData(pollData){
+
+}
+
+function renderChart(sentimentDataSet,pollData){
     // const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(dataSet)))
 
-    function createChartArrays(dataSet){
-
-    }
+    function createChartArrays(sentimentDataSet){}
 
     const sentimentData = []
     const sentimentDates = []
@@ -70,7 +71,7 @@ function renderChart(dataSet){
     const sentimentHeadline = []
 
     //formerly wrangledData
-    dataSet.forEach(article =>{
+    sentimentDataSet.forEach(article =>{
       if(article !== undefined){
         sentimentData.push(article.sentiment)
         sentimentDates.push(article['pub_date'])
@@ -79,9 +80,7 @@ function renderChart(dataSet){
       }
     })
 
-    // if (error){
-    //   return console.warn(error);
-    // }
+    console.log(pollData)
 
     var TrumpPolls = {
       x: electionDates,

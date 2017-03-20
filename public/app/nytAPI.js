@@ -51,11 +51,13 @@ const nytFunctionality = (function(document){
             })
         })
 
+        //call the pollData function from renderChart
         Promise.all(analyzedArticles)
           .then(function (result) {
             if(local === false){
+              console.log(pollData('polls',100)) //this is not being read
               writeSentimentData(result,searchString)
-              return renderChart(result)
+              return renderChart(result,pollData('polls',100))
             }
             return renderChart(result)
           })
