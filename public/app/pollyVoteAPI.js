@@ -5,16 +5,10 @@
   const pollData = function(type,displaydays){
     let url = "http://galvanize-cors-proxy.herokuapp.com/https://pollyvote.com/wp-content/plugins/pollyvote/data/index.php";
     let data = {
-      time: 'current',
+      'time': 'current',
       'type': type,
       'displaydays': displaydays
     }
 
     return $.get(url, data)
-      .then(function(result) {
-        return result
-      })
-      .catch(function(err) {
-        throw err;
-      });
 }

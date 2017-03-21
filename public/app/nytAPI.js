@@ -22,7 +22,7 @@ const nytFunctionality = (function(document){
 
   //Add flag to check if information should be sent to firebase
     //local parameter determines whether or not to send information to firebase
-  nytFunctionality.retreiveArticles = function(searchString,page,local = true){
+  nytFunctionality.retreiveArticles = function(searchString,page,local = true,pollType,pollingDays){
     let url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
     let data = {
       'q': searchString,
@@ -47,18 +47,21 @@ const nytFunctionality = (function(document){
                 article['sentiment'] = res.score
                 return article
               }
-              console.log('sentiment not added')
+              console.log('sentiment not added',article)
             })
         })
+
+
 
         //call the pollData function from renderChart
         Promise.all(analyzedArticles)
           .then(function (result) {
-            if(local === false){
-              console.log(pollData('polls',100)) //this is not being read
-              writeSentimentData(result,searchString)
-              return renderChart(result,pollData('polls',100))
+            if(local){
+              pollData('polls',100).then(function(pollResult) {
+                renderChart(result,pollResult)
+              })
             }
+            writeSentimentData(result,searchString)
             return renderChart(result)
           })
       })
@@ -70,7 +73,8 @@ const nytFunctionality = (function(document){
   return nytFunctionality
 })(document)
 
-function makeAPICalls(searchTerm,n){
+
+function makeAPICalls(searchTerm,n,local,pollType,pollingDays){
   let page = -1;
   console.log('call is going through')
 

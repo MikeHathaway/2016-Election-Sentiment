@@ -39,6 +39,10 @@ function arrayFlattener(data){
   },[])
 }
 
+function concatArray(array){
+
+}
+
 
 function convertDatesToStrings(dataArray){
   dataArray.forEach(article =>{
@@ -56,15 +60,12 @@ d3.tsv('./data/GenElPolls.csv',function(error,pollData){
   console.log(pollData)
 })
 
-function wranglePollData(pollData){
 
-}
-
-function renderChart(sentimentDataSet,pollData){
+//specify day range
+function renderChart(sentimentDataSet,pollData,daysRange = 160){
     // const wrangledData = convertDatesToStrings(arrayFlattener(filterUniqueSentimentalArticles(dataSet)))
 
     function createChartArrays(sentimentDataSet){}
-
     const sentimentData = []
     const sentimentDates = []
     const sentimentURL = []
@@ -80,8 +81,63 @@ function renderChart(sentimentDataSet,pollData){
       }
     })
 
-    console.log(pollData)
 
+    //generates only HuffPollster forecasts as default value
+    const pollAggregator = function(pollData,aggregator = 'HuffPost Pollster'){
+      return pollData.data.filter(poll =>{
+        if(poll.surveyorg === 'poll aggregator' && poll.forecast === aggregator){
+          return poll
+        }
+      })
+    }
+
+    const pollDates = function(){
+      return pollAggregator(pollData).map(poll => {
+        return poll.fcdate
+      })
+    }
+
+    const TrumpAverage = function(){
+      return pollAggregator(pollData).map(poll => {
+        return poll.fcrepvs
+      })
+    }
+
+    const ClintonAverage = function(){
+      return pollAggregator(pollData).map(poll => {
+        return poll.fcdemvs
+      })
+    }
+
+
+    const daysOfInterest = function(daysRange,pollingData){
+      const daysArray = []
+      const endDay = "08.11.2016"
+
+
+      if(daysRange === 160){
+        let currentDay
+      }
+
+      // while(currentDay < endDay){
+      //
+      // }
+    }
+
+    const averagedPolls = function (pollData){
+      return daysOfInterest.map(pollingDay => {
+        return pollingDay.reduce((acc,curr) =>{
+          if(curr.fcdate){
+            return curr
+          }
+        },[])
+      })
+    }
+
+    console.log(pollAggregator(pollData))
+
+
+    //may want to wrap this whole graph generation in function
     var TrumpPolls = {
       x: electionDates,
       y: finalTrumpNums,
@@ -138,7 +194,7 @@ function renderChart(sentimentDataSet,pollData){
       },
       // title:'Sentiment and Polls in 2016',
       height: 755,
-      width: 5000
+      width: 1500 //formerly 5000
     };
 
     Plotly.newPlot('combined-chart', data, layout);
